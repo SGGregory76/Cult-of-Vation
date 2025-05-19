@@ -1,1 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cult of Vation</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <main id="app">
+    <h1>Cult of Vation</h1>
+    <div id="status">Loading game...</div>
+    <button id="continueBtn" style="display:none">Enter Game</button>
+  </main>
+
+  <script src="js/loader.js"></script>
+  <script src="js/state.js"></script>
+  <script>
+    async function startGame() {
+      await loadGameData();
+      initPlayerState();
+
+      document.getElementById("status").innerText = `Welcome back, ${PlayerState.alias}.`;
+      document.getElementById("continueBtn").style.display = "inline-block";
+    }
+
+    document.getElementById("continueBtn").addEventListener("click", () => {
+      if (PlayerState.flags.burner_os_unlocked) {
+        window.location.href = "https://hustletrap.blogspot.com/p/burner-os.html?m=1";
+      } else {
+        window.location.href = "intro-maya.html"; // fallback intro page
+      }
+    });
+
+    startGame();
+  </script>
+</body>
+</html>
 
