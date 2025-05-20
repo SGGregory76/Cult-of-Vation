@@ -49,6 +49,7 @@ function checkLevelUp() {
   const state = getPlayerState();
   const growth = getGrowthProfile();
   const xpToLevel = growth.xpToLevel || [10, 25, 50, 100];
+  const rewards = getLevelRewards();
 
   while (state.level < xpToLevel.length && state.xp >= xpToLevel[state.level]) {
     state.level++;
@@ -57,6 +58,15 @@ function checkLevelUp() {
     state.def += growth.defPerLevel || 1;
     state.energy += growth.energyPerLevel || 1;
     appendToLog(`⬆️ Level Up! Now Level ${state.level} | +❤️ +🗡️ +🛡️ +⚡`);
+
+    const levelStr = String(state.level);
+    if (rewards[levelStr]) {
+      const reward = rewards[levelStr];
+      if (reward.perk) addPerk(reward.perk);
+      if (reward.item) addInventoryItem(reward.item);
+      if (reward.effects) applyEffects(reward.effects);
+      appendToLog(`🎁 Level ${state.level} Reward: ${reward.perk || ''} ${reward.item || ''}`);
+    }
   }
 
   savePlayerState(state);
@@ -66,6 +76,25 @@ function checkLevelUp() {
 function getGrowthProfile() {
   const stored = localStorage.getItem('growth');
   return stored ? JSON.parse(stored) : {};
+}
+
+function getLevelRewards() {
+  const stored = localStorage.getItem('levelRewards');
+  return stored ? JSON.parse(stored) : {};
+}
+
+function addPerk(perk) {
+  const perks = JSON.parse(localStorage.getItem('perks') || '[]');
+  if (!perks.includes(perk)) {
+    perks.push(perk);
+    localStorage.setItem('perks', JSON.stringify(perks));
+  }
+}
+
+function addInventoryItem(item) {
+  const inventory = JSON.parse(localStorage.getItem('inventory') || '[]');
+  inventory.push(item);
+  localStorage.setItem('inventory', JSON.stringify(inventory));
 }
 
 // Initialize player from external profile
@@ -80,6 +109,7 @@ async function initFromJson(url) {
   localStorage.setItem('inventory', JSON.stringify(profile.inventory || []));
   localStorage.setItem('loadout', JSON.stringify(profile.loadout || {}));
   localStorage.setItem('growth', JSON.stringify(profile.growth || {}));
+  localStorage.setItem('levelRewards', JSON.stringify(profile.levelRewards || {}));
 
   appendToLog('🧬 Player initialized from profile.');
   updateStatDisplay();
