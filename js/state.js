@@ -1,53 +1,24 @@
-// state.js – Manages player state, stat updates, save/load logic
+// state.js - applies effects and game mechanics
 
-let PlayerState = {};
-
-function initPlayerState(data = null) {
-  if (data) {
-    PlayerState = JSON.parse(JSON.stringify(data));
-  } else if (localStorage.getItem("player_save")) {
-    PlayerState = JSON.parse(localStorage.getItem("player_save"));
-  } else {
-    PlayerState = JSON.parse(JSON.stringify(GameData.player));
-  }
-  console.log("🎮 Player State Initialized", PlayerState);
-  return PlayerState;
-}
-
-function savePlayerState() {
-  localStorage.setItem("player_save", JSON.stringify(PlayerState));
-  console.log("💾 Player State Saved");
-}
-
-function updateStat(stat, value) {
-  if (PlayerState.hasOwnProperty(stat)) {
-    PlayerState[stat] += value;
-    console.log(`🔁 Updated ${stat} by ${value} →`, PlayerState[stat]);
-    savePlayerState();
+function applyEffects(effects) {
+  for (const stat in effects) {
+    updateStat(stat, effects[stat]);
   }
 }
 
-function setFlag(flag, val = true) {
-  PlayerState.flags[flag] = val;
-  console.log(`🚩 Flag set: ${flag} = ${val}`);
-  savePlayerState();
-}
+function checkLevelUp() {
+  const state = loadPlayerState();
+  const xp = state.exp || 0;
+  const level = state.level || 1;
+  const nextLevelXp = level * 100;
 
-function addInventory(item) {
-  PlayerState.inventory.push(item);
-  console.log(`🎒 Added to inventory: ${item}`);
-  savePlayerState();
+  if (xp >= nextLevelXp) {
+    state.level = level + 1;
+    state.exp = xp - nextLevelXp;
+    updateStat("cash", 50); // Bonus for leveling up
+    updateStat("energy", 1);
+    addPerk("Level Up Reward");
+    savePlayerState(state);
+    console.log(`🎉 Level Up! You are now level ${state.level}`);
+  }
 }
-
-function hasFlag(flag) {
-  return !!PlayerState.flags[flag];
-}
-
-function hasItem(itemId) {
-  return PlayerState.inventory.includes(itemId);
-}
-
-function getStat(stat) {
-  return PlayerState[stat] || 0;
-}
-
