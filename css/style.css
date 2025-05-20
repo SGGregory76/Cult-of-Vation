@@ -1,68 +1,45 @@
-/* Global Styles */
 body {
-  background-color: #0a0a0a;
-  color: #f0f0f0;
-  font-family: 'Courier New', monospace;
   margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  min-height: 100vh;
-}
-
-main, .dialogue-box {
-  width: 100%;
-  max-width: 640px;
   padding: 20px;
-  box-sizing: border-box;
-}
-
-h1, h2, h3, h4, h5 {
-  text-align: center;
-  color: #f9d923;
-  margin-bottom: 20px;
-}
-
-button, .choice, .start-btn button {
-  background: #222;
-  color: #f9f9f9;
-  border: 1px solid #555;
-  padding: 10px 20px;
-  margin: 10px auto;
-  display: block;
-  cursor: pointer;
-  font-weight: bold;
-  border-radius: 6px;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom, #111, #222);
+  color: #f0f0f0;
   text-align: center;
 }
 
-button:hover, .choice:hover, .start-btn button:hover {
-  background: #333;
-  border-color: #f9d923;
-  color: #fff;
-}
-
-.dialogue-box {
-  background: #1c1c1c;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
-  margin-top: 40px;
-}
-
-.response, .reward, .start-btn {
-  margin-top: 20px;
+h1, h2, h3 {
   text-align: center;
-  color: #f9d923;
-  font-weight: bold;
+  font-weight: 600;
+  margin: 20px 0;
 }
 
-a, a:visited {
-  color: #66ccff;
+p, .content {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto 20px auto;
+}
+
+a {
+  color: #00ffff;
   text-decoration: none;
+  font-weight: bold;
 }
-
 a:hover {
   text-decoration: underline;
+}
+
+button, .link-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 10px auto;
+  background: #333;
+  color: #fff;
+  border: 1px solid #666;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+}
+button:hover, .link-btn:hover {
+  background: #555;
 }
