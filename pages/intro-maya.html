@@ -11,7 +11,7 @@
     body {
       background-color: #0a0a0a;
       color: #f0f0f0;
-      font-family: 'Courier New', monospace;
+      font-family: monospace;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -21,14 +21,15 @@
       color: #f9d923;
       text-align: center;
     }
-    .dialogue-box {
+    .dialogue-box, .choice-box, .result-box {
+      display: none;
       background: #1c1c1c;
       padding: 20px;
       border-radius: 10px;
       max-width: 600px;
       width: 100%;
-      box-shadow: 0 0 10px #000;
       margin-top: 20px;
+      box-shadow: 0 0 10px #000;
     }
     .choice, button {
       background: #222;
@@ -47,7 +48,7 @@
       border-color: #f9d923;
     }
     .response, .reward {
-      margin-top: 20px;
+      margin-top: 10px;
       text-align: center;
       font-weight: bold;
     }
@@ -56,19 +57,28 @@
 <body>
   <main>
     <h1>Intro Encounter: Maya</h1>
+
+    <!-- Start button -->
+    <div class="dialogue-box" style="display: block; text-align: center;" id="start-box">
+      <button id="start-btn">🎬 Start Encounter</button>
+    </div>
+
+    <!-- Dialogue container -->
     <div class="dialogue-box" id="dialogue-box">
       <p id="dialogue-text">...</p>
       <button id="next-btn">➡️ Next</button>
     </div>
 
-    <div id="choices" style="display:none" class="dialogue-box">
+    <!-- Choices shown after dialogue -->
+    <div class="choice-box" id="choices">
       <div class="choice" id="sell">💵 Sell it</div>
       <div class="choice" id="give">🤝 Give it to Maya</div>
       <div class="choice" id="smoke">🚬 Smoke it</div>
       <div class="choice" id="nothing">😐 Say nothing</div>
     </div>
 
-    <div class="dialogue-box">
+    <!-- Results after choice -->
+    <div class="result-box" id="results">
       <div class="response" id="response"></div>
       <div class="reward" id="reward"></div>
     </div>
@@ -76,6 +86,13 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
+      const startBox = document.getElementById("start-box");
+      const dialogueBox = document.getElementById("dialogue-box");
+      const choices = document.getElementById("choices");
+      const results = document.getElementById("results");
+      const dialogueText = document.getElementById("dialogue-text");
+      const nextBtn = document.getElementById("next-btn");
+
       const dialogueLines = [
         "*Knocks on your window.*",
         "Still breathing in there? Good. I wasn't sure if you were dead or just broke.",
@@ -85,64 +102,62 @@
       ];
 
       let lineIndex = 0;
-      const dialogueText = document.getElementById('dialogue-text');
-      const nextBtn = document.getElementById('next-btn');
-      const choices = document.getElementById('choices');
 
-      dialogueText.innerText = dialogueLines[lineIndex];
+      document.getElementById("start-btn").addEventListener("click", () => {
+        startBox.style.display = "none";
+        dialogueBox.style.display = "block";
+        dialogueText.innerText = dialogueLines[lineIndex];
+      });
 
-      nextBtn.addEventListener('click', () => {
+      nextBtn.addEventListener("click", () => {
         lineIndex++;
         if (lineIndex < dialogueLines.length) {
           dialogueText.innerText = dialogueLines[lineIndex];
         } else {
-          nextBtn.style.display = 'none';
-          choices.style.display = 'block';
+          nextBtn.style.display = "none";
+          choices.style.display = "block";
         }
       });
 
-      ['sell', 'give', 'smoke', 'nothing'].forEach(id => {
-        document.getElementById(id).addEventListener('click', () => choose(id));
+      ["sell", "give", "smoke", "nothing"].forEach(id => {
+        document.getElementById(id).addEventListener("click", () => choose(id));
       });
-    });
 
-    async function choose(action) {
-      await loadGameData();
-      initPlayerState();
+      async function choose(action) {
+        await loadGameData();
+        initPlayerState();
 
-      const res = document.getElementById('response');
-      const reward = document.getElementById('reward');
+        let msg = '', gain = '';
 
-      let msg = '', gain = '';
+        if (action === 'sell') {
+          applyEffects({ cash: 20 });
+          msg = '💵 You flip the bag for $20. Maya fades into the alley.';
+          gain = '+💰 $20 | Burner OS Locked';
+        } else if (action === 'give') {
+          applyEffects({ rep: 10, flags: ["met_maya", "burner_os_unlocked"] });
+          msg = '🤝 Maya smirks. \"You might make it after all.\"';
+          gain = '+⭐ REP 10 | 🔓 Burner OS Unlocked';
+        } else if (action === 'smoke') {
+          applyEffects({ heat: 1, energy: -1 });
+          msg = '🚬 You light up. Maya just walks away.';
+          gain = '+🔥 Heat 1 | -1 ⚡ Energy';
+        } else {
+          msg = '😐 You say nothing. Maya walks off in silence.';
+          gain = 'No change';
+        }
 
-      if (action === 'sell') {
-        applyEffects({ cash: 20 });
-        msg = '💵 You flip the bag for $20. Maya fades into the alley.';
-        gain = '+💰 $20 | Burner OS Locked';
-      } else if (action === 'give') {
-        applyEffects({ rep: 10, flags: ["met_maya", "burner_os_unlocked"] });
-        msg = '🤝 Maya smirks. "You might make it after all."';
-        gain = '+⭐ REP 10 | 🔓 Burner OS Unlocked';
-      } else if (action === 'smoke') {
-        applyEffects({ heat: 1, energy: -1 });
-        msg = '🚬 You light up. Maya just walks away.';
-        gain = '+🔥 Heat 1 | -1 ⚡ Energy';
-      } else {
-        msg = '😐 You say nothing. Maya walks off in silence.';
-        gain = 'No change';
+        setFlag('intro_complete');
+        document.getElementById("response").innerText = msg;
+        document.getElementById("reward").innerText = gain;
+
+        choices.style.display = "none";
+        results.style.display = "block";
+
+        setTimeout(() => {
+          window.location.href = "https://sggregory76.github.io/Cult-of-Vation/index.html";
+        }, 2500);
       }
-
-      setFlag('intro_complete');
-      res.innerText = msg;
-      reward.innerText = gain;
-
-      res.style.display = 'block';
-      reward.style.display = 'block';
-
-      setTimeout(() => {
-        window.location.href = "https://sggregory76.github.io/Cult-of-Vation/index.html";
-      }, 2500);
-    }
+    });
   </script>
 </body>
 </html>
