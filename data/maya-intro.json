@@ -10,34 +10,38 @@
     "sell": {
       "label": "💵 Sell it",
       "response": "You flip the bag for $20. Maya fades into the alley.",
-      "reward": "+$20 | 🔒 Burner OS Locked",
-      "effects": {
-        "cash": 20
-      }
+      "reward": "+💰 $20 | 📱 Burner OS Acquired",
+      "effects": { "cash": 20, "rep": 2, "heat": 1 },
+      "item": "Used Burner",
+      "perk": "Hustler",
+      "flags": ["intro_complete", "maya_mission_unlocked"]
     },
     "give": {
-      "label": "🤝 Give to Maya",
-      "response": "Maya smirks. \"You might make it after all.\"",
-      "reward": "+REP 10 | 🔓 Burner OS Unlocked",
-      "effects": {
-        "rep": 10,
-        "flags": ["met_maya", "burner_os_unlocked"]
-      }
+      "label": "🤝 Give it to Maya",
+      "response": "Maya smirks. 'You might make it after all.'",
+      "reward": "+⭐ REP 10 | 📱 Burner OS Acquired",
+      "effects": { "rep": 10, "cash": 5 },
+      "item": "Used Burner",
+      "perk": "Loyal",
+      "flags": ["intro_complete", "maya_mission_unlocked"]
     },
     "smoke": {
       "label": "🚬 Smoke it",
-      "response": "You light up. Maya walks off without another word.",
-      "reward": "+🔥 Heat 1 | -1 ⚡ Energy",
-      "effects": {
-        "heat": 1,
-        "energy": -1
-      }
+      "response": "You light up. Maya just walks away.",
+      "reward": "+🔥 Heat 2 | 📱 Burner OS Acquired | -1 ⚡ Energy",
+      "effects": { "heat": 2, "energy": -1, "rep": 1 },
+      "item": "Used Burner",
+      "perk": "Drifter",
+      "flags": ["intro_complete", "maya_mission_unlocked"]
     },
     "nothing": {
-      "label": "😐 Say nothing",
-      "response": "You say nothing. Maya shrugs and disappears into the street.",
-      "reward": "No changes",
-      "effects": {}
+      "label": "... Say nothing",
+      "response": "You say nothing. Maya walks off in silence.",
+      "reward": "+⚡ Energy 1 | 📱 Burner OS Acquired",
+      "effects": { "energy": 1, "rep": 3 },
+      "item": "Used Burner",
+      "perk": "Silent Start",
+      "flags": ["intro_complete", "maya_mission_unlocked"]
     }
   }
 }
