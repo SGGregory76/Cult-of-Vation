@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Intro Encounter: Maya</title>
+  <link rel="stylesheet" href="https://sggregory76.github.io/Cult-of-Vation/css/style.css">
+  <script src="https://sggregory76.github.io/Cult-of-Vation/js/loader.js"></script>
+  <script src="https://sggregory76.github.io/Cult-of-Vation/js/state.js"></script>
+  <script src="https://sggregory76.github.io/Cult-of-Vation/js/engine.js"></script>
+  <style>
+    body {
+      background-color: #0a0a0a;
+      color: #f0f0f0;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #f9d923;
+      text-align: center;
+    }
+    .dialogue-box {
+      background: #1c1c1c;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 0 10px #000;
+      margin-top: 20px;
+    }
+    .choice, button {
+      background: #222;
+      color: white;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #444;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 16px;
+      width: 100%;
+    }
+    .choice:hover, button:hover {
+      background-color: #333;
+      border-color: #f9d923;
+    }
+    .response, .reward {
+      margin-top: 20px;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Intro Encounter: Maya</h1>
+    <div class="dialogue-box" id="dialogue-box">
+      <p id="dialogue-text">...</p>
+      <button id="next-btn">➡️ Next</button>
+    </div>
+
+    <div id="choices" style="display:none" class="dialogue-box">
+      <div class="choice" id="sell">💵 Sell it</div>
+      <div class="choice" id="give">🤝 Give it to Maya</div>
+      <div class="choice" id="smoke">🚬 Smoke it</div>
+      <div class="choice" id="nothing">😐 Say nothing</div>
+    </div>
+
+    <div class="dialogue-box">
+      <div class="response" id="response"></div>
+      <div class="reward" id="reward"></div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const dialogueLines = [
+        "*Knocks on your window.*",
+        "Still breathing in there? Good. I wasn't sure if you were dead or just broke.",
+        "You don’t remember me, huh? Figures. Too much smoke, too little sleep.",
+        "Name’s Maya. You were smart once. Now you’re parked on a turf line with no stash, no crew, and a phone that looks stomped.",
+        "I tossed you something green. Sell it, smoke it, or give it back. Your move."
+      ];
+
+      let lineIndex = 0;
+      const dialogueText = document.getElementById('dialogue-text');
+      const nextBtn = document.getElementById('next-btn');
+      const choices = document.getElementById('choices');
+
+      dialogueText.innerText = dialogueLines[lineIndex];
+
+      nextBtn.addEventListener('click', () => {
+        lineIndex++;
+        if (lineIndex < dialogueLines.length) {
+          dialogueText.innerText = dialogueLines[lineIndex];
+        } else {
+          nextBtn.style.display = 'none';
+          choices.style.display = 'block';
+        }
+      });
+
+      ['sell', 'give', 'smoke', 'nothing'].forEach(id => {
+        document.getElementById(id).addEventListener('click', () => choose(id));
+      });
+    });
+
+    async function choose(action) {
+      await loadGameData();
+      initPlayerState();
+
+      const res = document.getElementById('response');
+      const reward = document.getElementById('reward');
+
+      let msg = '', gain = '';
+
+      if (action === 'sell') {
+        applyEffects({ cash: 20 });
+        msg = '💵 You flip the bag for $20. Maya fades into the alley.';
+        gain = '+💰 $20 | Burner OS Locked';
+      } else if (action === 'give') {
+        applyEffects({ rep: 10, flags: ["met_maya", "burner_os_unlocked"] });
+        msg = '🤝 Maya smirks. "You might make it after all."';
+        gain = '+⭐ REP 10 | 🔓 Burner OS Unlocked';
+      } else if (action === 'smoke') {
+        applyEffects({ heat: 1, energy: -1 });
+        msg = '🚬 You light up. Maya just walks away.';
+        gain = '+🔥 Heat 1 | -1 ⚡ Energy';
+      } else {
+        msg = '😐 You say nothing. Maya walks off in silence.';
+        gain = 'No change';
+      }
+
+      setFlag('intro_complete');
+      res.innerText = msg;
+      reward.innerText = gain;
+
+      res.style.display = 'block';
+      reward.style.display = 'block';
+
+      setTimeout(() => {
+        window.location.href = "https://sggregory76.github.io/Cult-of-Vation/index.html";
+      }, 2500);
+    }
+  </script>
+</body>
+</html>
