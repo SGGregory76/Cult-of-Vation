@@ -5,7 +5,29 @@
     "heat": 0,
     "energy": 3,
     "xp": 0,
-    "level": 1
+    "level": 1,
+    "hp": 100,
+    "atk": 5,
+    "def": 3
+  },
+  "growth": {
+    "hpPerLevel": 10,
+    "atkPerLevel": 2,
+    "defPerLevel": 1,
+    "energyPerLevel": 1,
+    "xpToLevel": [10, 25, 50, 100]
+  },
+  "levelRewards": {
+    "2": {
+      "perk": "Quick Learner",
+      "item": "Energy Bar",
+      "effects": { "energy": 1 }
+    },
+    "3": {
+      "perk": "Hard Hitter",
+      "item": "Steel Knuckles",
+      "effects": { "atk": 3 }
+    }
   },
   "abilities": {
     "crafting": 0,
@@ -23,4 +45,3 @@
     "phone": "Broken Burner"
   }
 }
-
