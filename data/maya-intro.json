@@ -1,0 +1,35 @@
+{
+  "dialogue": [
+    "*Knocks on your window.*",
+    "Still breathing in there? Good. I wasn't sure if you were dead or just broke.",
+    "You don’t remember me, huh? Figures.",
+    "Name’s Maya. You were smart once. Now you’re parked on a turf line.",
+    "I tossed you something green. Sell it, smoke it, or give it back."
+  ],
+  "choices": {
+    "sell": {
+      "label": "💵 Sell it",
+      "response": "You flip the bag for $20. Maya fades into the alley.",
+      "reward": "+$20 | 🔒 OS Locked",
+      "effects": { "cash": 20 }
+    },
+    "give": {
+      "label": "🤝 Give to Maya",
+      "response": "Maya smirks. \"You might make it after all.\"",
+      "reward": "+REP 10 | 🔓 OS Unlocked",
+      "effects": { "rep": 10, "flags": ["met_maya", "burner_os_unlocked"] }
+    },
+    "smoke": {
+      "label": "🚬 Smoke it",
+      "response": "You light up. Maya walks off.",
+      "reward": "+HEAT 1 | -1 ⚡",
+      "effects": { "heat": 1, "energy": -1 }
+    },
+    "nothing": {
+      "label": "😐 Say nothing",
+      "response": "You say nothing. Maya leaves.",
+      "reward": "No changes",
+      "effects": {}
+    }
+  }
+}
