@@ -44,6 +44,30 @@ function applyEffects(effects = {}) {
   updateStatDisplay();
 }
 
+// Check and handle leveling up
+function checkLevelUp() {
+  const state = getPlayerState();
+  const growth = getGrowthProfile();
+  const xpToLevel = growth.xpToLevel || [10, 25, 50, 100];
+
+  while (state.level < xpToLevel.length && state.xp >= xpToLevel[state.level]) {
+    state.level++;
+    state.hp += growth.hpPerLevel || 10;
+    state.atk += growth.atkPerLevel || 2;
+    state.def += growth.defPerLevel || 1;
+    state.energy += growth.energyPerLevel || 1;
+    appendToLog(`⬆️ Level Up! Now Level ${state.level} | +❤️ +🗡️ +🛡️ +⚡`);
+  }
+
+  savePlayerState(state);
+  updateStatDisplay();
+}
+
+function getGrowthProfile() {
+  const stored = localStorage.getItem('growth');
+  return stored ? JSON.parse(stored) : {};
+}
+
 // Initialize player from external profile
 async function initFromJson(url) {
   const res = await fetch(url);
@@ -55,6 +79,7 @@ async function initFromJson(url) {
   localStorage.setItem('perks', JSON.stringify(profile.perks || []));
   localStorage.setItem('inventory', JSON.stringify(profile.inventory || []));
   localStorage.setItem('loadout', JSON.stringify(profile.loadout || {}));
+  localStorage.setItem('growth', JSON.stringify(profile.growth || {}));
 
   appendToLog('🧬 Player initialized from profile.');
   updateStatDisplay();
@@ -123,5 +148,11 @@ function updateStatDisplay() {
   }
   if (document.getElementById('stat-def')) {
     document.getElementById('stat-def').innerText = state.def || 0;
+  }
+  if (document.getElementById('stat-xp')) {
+    document.getElementById('stat-xp').innerText = state.xp || 0;
+  }
+  if (document.getElementById('stat-level')) {
+    document.getElementById('stat-level').innerText = state.level || 1;
   }
 }
